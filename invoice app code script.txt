@@ -1,0 +1,280 @@
+  =============================================  Tables ============================================================================
+Description:
+
+This table is used to store supplier master information.
+It contains basic details like supplier name, contact person, contact number, address, email, GSTIN, PAN, city, and pin code.
+
+This table is designed as a master table, so supplier data can be reused across multiple invoices.
+The LINK_COLUMN is used to logically associate supplier data with invoice-related records.
+
+Audit columns like CREATED_DATE, CREATED_BY, UPDATED_DATE, and UPDATED_BY are used for tracking data changes.
+
+
+  CREATE TABLE "SUPPLIER_DETAILS" 
+   (	"SUPPLIER_NAME" VARCHAR2(100), 
+	"CONTACT_PERSON" VARCHAR2(100), 
+	"CONTACT_NUMBER" NUMBER, 
+	"SUPPLIER_ADDRESS" VARCHAR2(255), 
+	"EMAIL" VARCHAR2(100), 
+	"GSTIN" VARCHAR2(100), 
+	"PAN" VARCHAR2(100), 
+	"CITY" VARCHAR2(100), 
+	"PIN_CODE" VARCHAR2(100), 
+	"ATTRIBUTE5" VARCHAR2(100), 
+	"LINK_COLUMN" NUMBER, 
+	"SUPPLIER_ID" NUMBER, 
+	"CREATED_DATE" DATE, 
+	"CREATED_BY" VARCHAR2(50), 
+	"UPDATED_BY" VARCHAR2(50), 
+	"UPDATED_DATE" DATE, 
+	"INVOICE_NUMBER" VARCHAR2(100)
+   ) ;
+   
+   
+   ----------------------------------------------------------------------
+   
+Description:
+
+This table stores buyer or customer details.
+It includes buyer name, consignee name, GSTIN, contact number, address, city, state, GST treatment type, and pin code.
+
+The separation of buyer data allows flexibility in handling different billing parties and GST scenarios.
+The LINK_COLUMN helps in connecting buyer data with invoice transactions.
+
+This table supports multiple buyers per user, making the application reusable for different businesses.
+
+   
+     CREATE TABLE "BUYER_DETAILS" 
+   (	"BUYER_NAME" VARCHAR2(100), 
+	"CONSIGNEE_NAME" VARCHAR2(100), 
+	"CONTACT_NUMBER" VARCHAR2(15), 
+	"ADDRESS" VARCHAR2(255), 
+	"EMAIL" VARCHAR2(100), 
+	"GSTIN" VARCHAR2(100), 
+	"CITY" VARCHAR2(100), 
+	"GST_TREATEMENT_TYPE" VARCHAR2(100), 
+	"STATE" VARCHAR2(100), 
+	"PIN_CODE" VARCHAR2(100), 
+	"LINK_COLUMN" NUMBER NOT NULL ENABLE, 
+	"BUYER_ID" NUMBER, 
+	"CREATED_BY" VARCHAR2(50), 
+	"UPDATED_BY" VARCHAR2(50), 
+	"CREATED_DATE" DATE, 
+	"UPDATED_DATE" DATE
+   ) ;
+   
+   
+   -----------------------------------------------------------------------
+   
+Description:
+   
+This table acts as the product master header.
+It stores high-level product information such as product name and product type.
+
+This table is designed to support a header–line structure, where one product header can have multiple product line items.
+Audit columns are included to track creation and update details.
+
+   
+     CREATE TABLE "PRODUCT_DETAILS_HEADER" 
+   (	"PRODUCT_ID" NUMBER, 
+	"PRODUCT_NAME" VARCHAR2(100), 
+	"PRODUCT_TYPE" VARCHAR2(100), 
+	"CREATION_DATE" DATE, 
+	"LINK_COLUMN" NUMBER, 
+	"CREATED_BY" VARCHAR2(50), 
+	"UPDATED_BY" VARCHAR2(50), 
+	"CREATED_DATE" DATE, 
+	"UPDATED_DATE" DATE
+   ) ;
+   
+   --------------------------------------------------------------------------
+   
+ Description:
+ 
+This table stores product line item details used in invoices.
+It contains item name, quantity, unit price, GST tax type, GST tax amount, and total price.
+
+Each record represents a single invoice item.
+The PRODUCT_ID links this table with the product header table.
+
+GST calculation is handled automatically using a database trigger to ensure data consistency and accuracy.
+   
+     CREATE TABLE "PRODUCT_DETAILS_LINE" 
+   (	"ITEM_NAME" VARCHAR2(100), 
+	"QUANTITY" NUMBER, 
+	"UNIT_PRICE" NUMBER(10,2), 
+	"TOTAL_PRICE" NUMBER(10,2), 
+	"CREATION_DATE" DATE, 
+	"PRODUCT_ID" NUMBER, 
+	"SL_NO" NUMBER, 
+	"ATTRIBUTE4" VARCHAR2(100), 
+	"ATTRIBUTE5" VARCHAR2(100), 
+	"LINK_COLUMN" NUMBER, 
+	"CREATED_BY" VARCHAR2(50), 
+	"UPDATED_BY" VARCHAR2(50), 
+	"CREATED_DATE" DATE, 
+	"UPDATED_DATE" DATE, 
+	"GST_TAX_AMOUNT" NUMBER, 
+	"GST_TAX_TYPE" VARCHAR2(100)
+   ) ;
+
+/
+
+---------------------------------------------------------
+
+Description:
+
+This table stores bank account details used for invoice payments.
+It includes bank name, account number, IFSC code, branch name, and account holder name.
+
+Keeping bank details in a separate table allows easy bank detail updates without modifying invoice data.
+The LINK_COLUMN helps associate bank details with invoice records.
+
+
+
+  CREATE TABLE "BANK_DETAILS" 
+   (	"BANK_NAME" VARCHAR2(100), 
+	"ACCOUNT_NUMBER" VARCHAR2(50), 
+	"IFSC_CODE" VARCHAR2(20), 
+	"BRANCH_NAME" VARCHAR2(100), 
+	"ACCOUNT_HOLDER" VARCHAR2(100), 
+	"CREATION_DATE" DATE, 
+	"ATTRIBUTE2" VARCHAR2(100), 
+	"ATTRIBUTE3" VARCHAR2(100), 
+	"ATTRIBUTE4" VARCHAR2(100), 
+	"ATTRIBUTE5" VARCHAR2(100), 
+	"LINK_COLUMN" NUMBER NOT NULL ENABLE, 
+	"BANK_ID" NUMBER, 
+	"CREATED_DATE" DATE, 
+	"CREATED_BY" VARCHAR2(50), 
+	"UPDATED_DATE" DATE, 
+	"UPDATED_BY" VARCHAR2(50)
+   ) ;
+   
+   ------------------------------------------------------------------------
+   
+Description:
+
+This table is used to store additional invoice-related information.
+It includes GST number, invoice number, invoice date, payment terms, remarks, challan number, courier charge, packing charge, and other charges.
+
+This table helps keep optional and flexible invoice fields separate from core invoice data,
+making the design clean and modular.
+   
+     CREATE TABLE "OTHER_DETAILS" 
+   (	"GST_NUMBER" VARCHAR2(20), 
+	"INVOICE_NUMBER" VARCHAR2(50), 
+	"INVOICE_DATE" DATE, 
+	"PAYMENT_TERMS" VARCHAR2(100), 
+	"REMARKS" VARCHAR2(255), 
+	"CHALAN_NUMBER" VARCHAR2(100), 
+	"CURRIER_CHARGE" VARCHAR2(100), 
+	"PACKING_CHARGE" VARCHAR2(100), 
+	"OTHER_CHARGE" VARCHAR2(100), 
+	"ATTRIBUTE5" VARCHAR2(100), 
+	"LINK_COLUMN" NUMBER NOT NULL ENABLE, 
+	"DETAIL_ID" NUMBER, 
+	"CREATED_BY" VARCHAR2(50), 
+	"CREATED_DATE" DATE, 
+	"UPDATED_DATE" DATE, 
+	"UPDATED_BY" VARCHAR2(50)
+   ) ;
+   -------------------------------------------
+   
+ Description:
+ 
+This table is used for custom user authentication and role management.
+It stores username, password, role, and account creation date.
+
+This table is used along with a custom authentication function instead of default Oracle APEX authentication.
+Based on the user role, application access and features can be controlled.
+   
+     CREATE TABLE "USER_INVOICE" 
+   ("USER_ID" NUMBER, 
+	"USERNAME" VARCHAR2(10), 
+	"PASSWORD" VARCHAR2(10), 
+	"CREATED_ON" DATE, 
+	"ROLE" VARCHAR2(10)
+   ) ;
+   
+   
+   before run should be insert dummy data.
+   
+User_id   USERNAME   PASSWORD   CREATED_ON       ROLE
+   2		user1	 user123	12/25/2025	     USER
+   1	    admin	 admin123	12/25/2025	     ADMIN
+   
+   ----------------------------------------------------
+   
+   
+   
+     CREATE TABLE "INDIAN_STATES" 
+   (	"STATE_ID" NUMBER GENERATED BY DEFAULT AS IDENTITY MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  NOT NULL ENABLE, 
+	"STATE_NAME" VARCHAR2(50) NOT NULL ENABLE, 
+	 PRIMARY KEY ("STATE_ID")
+  USING INDEX  ENABLE, 
+	 UNIQUE ("STATE_NAME")
+  USING INDEX  ENABLE
+   ) ;
+   
+   -----------------------------------------
+   
+     CREATE TABLE "BANK_MASTER" 
+   (	"BANK_NAME" VARCHAR2(100)
+   ) ;
+   
+   
+   --------------------------------------------
+   
+   
+   
+   ==============================================  trigger ================================================
+   
+   create or replace TRIGGER total_percentege_trig
+BEFORE INSERT OR UPDATE ON PRODUCT_DETAILS_LINE
+FOR EACH ROW
+BEGIN
+    :NEW.gst_tax_amount := :NEW.QUANTITY * :NEW.UNIT_PRICE * :NEW.gst_tax_type/100;
+END;
+/
+
+--------------------------------------------------------------------
+
+============================  Custom Authentication Function  ======================================================
+
+create or replace FUNCTION AUTH_INV
+(
+    p_username IN VARCHAR2,
+    p_password IN VARCHAR2
+)
+RETURN BOOLEAN
+AS
+    v_role USER_INVOICE.ROLE%TYPE;
+BEGIN
+    SELECT ROLE
+    INTO v_role
+    FROM USER_INVOICE
+    WHERE UPPER(USERNAME) = UPPER(p_username)
+      AND PASSWORD = p_password;
+
+    -- Authentication success
+    apex_util.set_authentication_result(0);
+
+    -- ROLE session me set karo
+    APEX_UTIL.SET_SESSION_STATE('APP_ROLE', v_role);
+
+    RETURN TRUE;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        apex_util.set_authentication_result(4);
+        RETURN FALSE;
+END AUTH_INV;
+/
+
+------------------------------------------------------------------------------
+
+
+
+   
+
