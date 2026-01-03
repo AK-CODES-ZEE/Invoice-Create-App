@@ -67,7 +67,7 @@ The AI Invoice Assistant is integrated using a **free external AI service**.
 
 A complete end-to-end walkthrough of this application is available on YouTube.
 
-👉 *(Add your YouTube video link here)*
+👉 https://youtu.be/fPU1KG5eYtw?si=DIrETrVjXPquyXTI
 
 ---
 
